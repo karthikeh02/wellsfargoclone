@@ -1,6 +1,6 @@
 export default function FooterHelp() {
   return (
-    <div style={{ padding: '0 8px' }}>
+    <div style={{ padding: '0 8px', borderTop: '1px solid #e2dede' }}>
       <div className="max-w-[1400px] mx-auto px-4 py-6">
         <h2
           style={{
