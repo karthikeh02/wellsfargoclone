@@ -16,8 +16,7 @@ export default function Register() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // placeholder
-    alert('Account registration submitted!');
+    navigate('/accounts');
   };
 
   const inputStyle: React.CSSProperties = {

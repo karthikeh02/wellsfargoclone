@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const f = '"Wells Fargo Sans", Arial, Helvetica, sans-serif';
 
@@ -10,6 +11,7 @@ function getGreeting() {
 }
 
 export default function SignOnBox() {
+  const navigate = useNavigate();
   const [greeting, setGreeting] = useState(getGreeting());
   const [showPassword, setShowPassword] = useState(false);
 
@@ -42,7 +44,7 @@ export default function SignOnBox() {
           Sign on to manage your accounts.
         </span>
 
-        <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
+        <form autoComplete="off" onSubmit={(e) => { e.preventDefault(); navigate('/accounts'); }}>
           {/* Username - no box border, just bottom line */}
           <div className="mb-5">
             <label htmlFor="userid" className="block" style={{

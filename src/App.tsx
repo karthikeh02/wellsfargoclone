@@ -11,6 +11,7 @@ import FooterHelp from './components/Footer/FooterHelp';
 import FooterLinks from './components/Footer/FooterLinks';
 import FooterDisclaimer from './components/Footer/FooterDisclaimer';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
 function HomePage() {
   return (
@@ -35,6 +36,7 @@ function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/accounts" element={<Dashboard />} />
     </Routes>
   );
 }
