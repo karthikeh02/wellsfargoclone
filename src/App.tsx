@@ -1,3 +1,4 @@
+import { Routes, Route } from 'react-router-dom';
 import TopBar from './components/Header/TopBar';
 import MainNav from './components/Header/MainNav';
 import HeroBanner from './components/Hero/HeroBanner';
@@ -9,37 +10,32 @@ import CommunitySection from './components/Community/CommunitySection';
 import FooterHelp from './components/Footer/FooterHelp';
 import FooterLinks from './components/Footer/FooterLinks';
 import FooterDisclaimer from './components/Footer/FooterDisclaimer';
+import Register from './pages/Register';
 
-function App() {
+function HomePage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#fff' }}>
-      {/* Header */}
       <TopBar />
       <MainNav />
-
-      {/* Hero: Sign-On overlays Banner */}
       <HeroBanner />
-
-      {/* Product Cards + Rates */}
       <ProductCards />
-
-      {/* Large Promo */}
       <PromoBanner />
-
-      {/* Financial Guidance Cards */}
       <GuidanceCards />
-
-      {/* Fargo */}
       <FargoSection />
-
-      {/* Community */}
       <CommunitySection />
-
-      {/* Footer */}
       <FooterHelp />
       <FooterLinks />
       <FooterDisclaimer />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/register" element={<Register />} />
+    </Routes>
   );
 }
 

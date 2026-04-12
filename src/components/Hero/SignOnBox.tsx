@@ -106,7 +106,7 @@ export default function SignOnBox() {
               Sign On
             </button>
             <a
-              href="#"
+              href="/register"
               className="hover:underline"
               style={{ color: '#5a469b', fontSize: '15px', fontFamily: f, textDecoration: 'none' }}
             >
@@ -125,7 +125,7 @@ export default function SignOnBox() {
           padding: '12px 16px 16px',
         }}
       >
-        <a href="#" className="block mb-1 hover:underline" style={{
+        <a href="/register" className="block mb-1 hover:underline" style={{
           color: '#141414', fontSize: '15px', fontFamily: f, lineHeight: '1.466', textDecoration: 'none',
         }}>
           Open an Account
