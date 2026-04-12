@@ -32,13 +32,13 @@ export default function FargoSection() {
               </p>
 
               <div className="flex items-center gap-3 mb-4">
-                <a href="#" aria-label="Download on the App Store">
+                <a  aria-label="Download on the App Store">
                   <img
                     src="https://www17.wellsfargomedia.com/assets/images/rwd/App_Store_Badge.png"
                     alt="" style={{ height: '40px' }}
                   />
                 </a>
-                <a href="#" aria-label="Get it on Google Play">
+                <a  aria-label="Get it on Google Play">
                   <img
                     src="https://www17.wellsfargomedia.com/assets/images/rwd/GooglePlay_Badge.png"
                     alt="" style={{ height: '40px' }}

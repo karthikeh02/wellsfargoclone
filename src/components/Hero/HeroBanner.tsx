@@ -37,7 +37,7 @@ export default function HeroBanner() {
             </p>
             <div style={{ padding: '24px 0' }}>
               <a
-                href="#"
+                
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',

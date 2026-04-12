@@ -71,7 +71,7 @@ export default function SignOnBox() {
                 style={{ ...inputStyle, paddingRight: '80px' }}
               />
               <a
-                href="#"
+                
                 onClick={(e) => { e.preventDefault(); setShowPassword(!showPassword); }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 hover:underline"
                 style={{ color: '#5a469b', fontSize: '0.88235294rem', textDecoration: 'underline' }}
@@ -132,12 +132,12 @@ export default function SignOnBox() {
         }}>
           Open an Account
         </a>
-        <a href="#" className="block mb-1 hover:underline" style={{
+        <a  className="block mb-1 hover:underline" style={{
           color: '#141414', fontSize: '15px', fontFamily: f, lineHeight: '1.466', textDecoration: 'none',
         }}>
           Forgot username or password?
         </a>
-        <a href="#" className="block hover:underline" style={{
+        <a  className="block hover:underline" style={{
           color: '#141414', fontSize: '15px', fontFamily: f, lineHeight: '1.466', textDecoration: 'none',
         }}>
           Privacy, Cookies, and Legal

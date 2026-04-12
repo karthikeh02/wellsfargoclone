@@ -73,6 +73,15 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Neutral clickable anchors (no href) still show pointer cursor */
+a:not([href]) {
+  cursor: pointer;
+  color: inherit;
+}
+a:not([href]):hover {
+  text-decoration: underline;
+}
+
 h1, h2, h3, h4 {
   font-family: "Wells Fargo Sans", Arial, Helvetica, sans-serif;
   font-weight: 400;

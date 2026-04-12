@@ -59,7 +59,7 @@ export default function ProductCards() {
                 {card.desc}
               </p>
               <a
-                href="#"
+                
                 className="inline-flex items-center gap-1 hover:underline"
                 style={{ color: '#5a469b', fontSize: '0.82352941rem', fontFamily: f, textDecoration: 'none' }}
               >
@@ -106,7 +106,7 @@ export default function ProductCards() {
               </select>
             </div>
             <a
-              href="#"
+              
               className="inline-flex items-center gap-1 mt-4 hover:underline"
               style={{ color: '#5a469b', fontSize: '0.82352941rem', fontFamily: f, textDecoration: 'none' }}
             >

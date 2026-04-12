@@ -16,7 +16,7 @@ export default function FooterDisclaimer() {
         {/* Social media icons - LEFT aligned */}
         <div className="flex items-center gap-4 mb-6">
           {socialIcons.map((s) => (
-            <a key={s.name} href="#" title={s.name} style={{ color: '#3b3331' }} className="hover:opacity-70">
+            <a key={s.name}  title={s.name} style={{ color: '#3b3331' }} className="hover:opacity-70">
               <svg style={{ width: '24px', height: '24px' }} fill="currentColor" viewBox="0 0 24 24"><path d={s.d} /></svg>
             </a>
           ))}
@@ -45,7 +45,7 @@ export default function FooterDisclaimer() {
           Investment products and services are offered through Wells Fargo Advisors. Wells Fargo
           Advisors is a trade name used by Wells Fargo Clearing Services, LLC (WFCS) and Wells
           Fargo Advisors Financial Network, LLC, Members{' '}
-          <a href="#" style={{ color: '#5a469b' }}>SIPC</a>, separate registered
+          <a  style={{ color: '#5a469b' }}>SIPC</a>, separate registered
           broker-dealers and non-bank affiliates of Wells Fargo &amp; Company.
         </p>
 

@@ -77,7 +77,7 @@ export default function Dashboard() {
                   {['Account', 'My Profile', 'Message Center', 'Locations', 'Language Preference'].map((item, i, arr) => (
                     <a
                       key={item}
-                      href="#"
+                      
                       onClick={(e) => { e.preventDefault(); setMenuOpen(false); }}
                       style={{
                         display: 'block',
@@ -125,7 +125,7 @@ export default function Dashboard() {
           <div style={{ marginBottom: '32px', marginTop: '8px' }}>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               {['Transfer & Pay', 'Deposit', 'Pay Bills', 'Wire Transfer', 'Zelle'].map((action) => (
-                <a key={action} href="#" style={{
+                <a key={action}  style={{
                   backgroundColor: '#fff', border: '1px solid #b5adad', borderRadius: '24px',
                   padding: '8px 20px', fontSize: '0.82rem', fontFamily: f, color: '#5a469b',
                   textDecoration: 'none', fontWeight: 600,
@@ -169,7 +169,7 @@ export default function Dashboard() {
                 Protect yourself from fraud. Review your recent activity, set up alerts, and learn how to keep your accounts safe.
               </p>
             </div>
-            <a href="#" style={{
+            <a  style={{
               backgroundColor: '#FFCD41', color: '#141414', borderRadius: '24px',
               padding: '9px 28px', fontFamily: f, fontWeight: 600, fontSize: '0.88rem',
               textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0,
@@ -215,8 +215,8 @@ export default function Dashboard() {
                 Get valuable insights like a summary of your spending by category, retailer and across accounts.
               </p>
               <div style={{ display: 'flex', gap: '12px' }}>
-                <a href="#"><img src="https://www17.wellsfargomedia.com/assets/images/rwd/App_Store_Badge.png" alt="" style={{ height: '36px' }} /></a>
-                <a href="#"><img src="https://www17.wellsfargomedia.com/assets/images/rwd/GooglePlay_Badge.png" alt="" style={{ height: '36px' }} /></a>
+                <a ><img src="https://www17.wellsfargomedia.com/assets/images/rwd/App_Store_Badge.png" alt="" style={{ height: '36px' }} /></a>
+                <a ><img src="https://www17.wellsfargomedia.com/assets/images/rwd/GooglePlay_Badge.png" alt="" style={{ height: '36px' }} /></a>
               </div>
             </div>
             <img
@@ -238,7 +238,7 @@ export default function Dashboard() {
                 <div style={{ padding: '16px 20px' }}>
                   <h3 style={{ fontFamily: f, fontSize: '1rem', fontWeight: 600, color: '#141414', margin: '0 0 8px' }}>Protect what matters</h3>
                   <p style={{ fontFamily: f, fontSize: '0.82rem', color: '#787070', margin: '0 0 12px', lineHeight: '1.4' }}>Learn about identity theft protection and fraud monitoring services.</p>
-                  <a href="#" style={{ color: '#5a469b', fontSize: '0.82rem', fontFamily: f }} className="hover:underline">Learn more &gt;</a>
+                  <a  style={{ color: '#5a469b', fontSize: '0.82rem', fontFamily: f }} className="hover:underline">Learn more &gt;</a>
                 </div>
               </div>
               <div style={{ flex: 1, backgroundColor: '#fff', borderRadius: '10px', boxShadow: '0 1px 5px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
@@ -246,7 +246,7 @@ export default function Dashboard() {
                 <div style={{ padding: '16px 20px' }}>
                   <h3 style={{ fontFamily: f, fontSize: '1rem', fontWeight: 600, color: '#141414', margin: '0 0 8px' }}>Your financial goals</h3>
                   <p style={{ fontFamily: f, fontSize: '0.82rem', color: '#787070', margin: '0 0 12px', lineHeight: '1.4' }}>Start crafting the foundation for the future you see yourself in.</p>
-                  <a href="#" style={{ color: '#5a469b', fontSize: '0.82rem', fontFamily: f }} className="hover:underline">Get started &gt;</a>
+                  <a  style={{ color: '#5a469b', fontSize: '0.82rem', fontFamily: f }} className="hover:underline">Get started &gt;</a>
                 </div>
               </div>
               <div style={{ flex: 1, backgroundColor: '#fff', borderRadius: '10px', boxShadow: '0 1px 5px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
@@ -254,7 +254,7 @@ export default function Dashboard() {
                 <div style={{ padding: '16px 20px' }}>
                   <h3 style={{ fontFamily: f, fontSize: '1rem', fontWeight: 600, color: '#141414', margin: '0 0 8px' }}>Fraud &amp; Scam Alert</h3>
                   <p style={{ fontFamily: f, fontSize: '0.82rem', color: '#787070', margin: '0 0 12px', lineHeight: '1.4' }}>Spot the latest tactics scammers are using and stay protected.</p>
-                  <a href="#" style={{ color: '#5a469b', fontSize: '0.82rem', fontFamily: f }} className="hover:underline">Stay updated &gt;</a>
+                  <a  style={{ color: '#5a469b', fontSize: '0.82rem', fontFamily: f }} className="hover:underline">Stay updated &gt;</a>
                 </div>
               </div>
             </div>

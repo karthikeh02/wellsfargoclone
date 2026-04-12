@@ -57,7 +57,7 @@ export default function GuidanceCards() {
                 </div>
                 <p>
                   <a
-                    href="#"
+                    
                     className="inline-flex items-center gap-1 hover:underline"
                     style={{
                       color: '#5a469b', fontFamily: f, fontSize: '0.88235294rem',

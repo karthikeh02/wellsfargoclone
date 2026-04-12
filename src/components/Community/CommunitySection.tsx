@@ -62,7 +62,7 @@ export default function CommunitySection() {
                 </div>
                 <p style={{ marginTop: 'auto', marginBottom: '20px' }}>
                   <a
-                    href="#"
+                    
                     className="inline-block hover:underline"
                     style={{
                       backgroundColor: '#fff', border: '1px solid #3b3331', color: '#3b3331',

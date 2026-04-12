@@ -64,7 +64,7 @@ export default function MainNav() {
               {subNavItems.map((item) => (
                 <li key={item} className="inline-block">
                   <a
-                    href="#"
+                    
                     className="whitespace-nowrap hover:underline"
                     style={{
                       display: 'inline-flex',

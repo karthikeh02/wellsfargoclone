@@ -20,7 +20,7 @@ export default function FooterLinks() {
         <div className="flex flex-wrap items-center gap-y-1">
           {links.map((link, i) => (
             <span key={link} className="flex items-center">
-              <a href="#" style={{ color: '#5a469b', fontSize: '0.76470588rem', fontFamily: f }} className="hover:underline">
+              <a  style={{ color: '#5a469b', fontSize: '0.76470588rem', fontFamily: f }} className="hover:underline">
                 {link}
               </a>
               {i < links.length - 1 && (

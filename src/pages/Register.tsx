@@ -39,7 +39,7 @@ export default function Register() {
           </a>
           <nav style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
             {['Open an Account', 'Customer Service', 'ATMs/Locations', 'Español'].map((item) => (
-              <a key={item} href="#" style={{ color: '#fff', textDecoration: 'none', fontSize: '0.76rem', fontFamily: f }} className="hover:underline">
+              <a key={item}  style={{ color: '#fff', textDecoration: 'none', fontSize: '0.76rem', fontFamily: f }} className="hover:underline">
                 {item}
               </a>
             ))}
