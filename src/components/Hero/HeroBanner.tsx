@@ -4,7 +4,7 @@ export default function HeroBanner() {
   return (
     <div className="w-full" style={{ backgroundColor: '#f9f7f6' }}>
       <div className="max-w-[1400px] mx-auto" style={{ padding: '48px 32px 80px', minHeight: '620px' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '48px' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '48px', paddingLeft: '40px' }}>
           {/* Sign-On Box - fixed width left side */}
           <div style={{ width: '335px', minWidth: '335px', maxWidth: '335px', flexShrink: 0, flexGrow: 0 }}>
             <SignOnBox />
