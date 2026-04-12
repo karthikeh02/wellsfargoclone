@@ -8,6 +8,7 @@ const f = '"Wells Fargo Sans", Arial, Helvetica, sans-serif';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: f }}>
@@ -29,19 +30,71 @@ export default function Dashboard() {
               Sign Off
             </a>
             <div style={{ width: '1px', height: '28px', backgroundColor: 'rgba(255,255,255,0.4)' }} />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '20px', height: '20px', color: '#fff' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <div style={{ position: 'relative' }}>
+              <div
+                onClick={() => setMenuOpen(!menuOpen)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
+                  backgroundColor: menuOpen ? '#9c0b18' : 'transparent',
+                  padding: '10px 14px', borderRadius: menuOpen ? '4px 4px 0 0' : '0',
+                  transition: 'background-color 0.15s',
+                }}
+              >
+                <div style={{ width: '36px', height: '36px', borderRadius: '50%', border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '20px', height: '20px', color: '#fff' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div style={{ color: '#fff', lineHeight: '1.2' }}>
+                  <div style={{ fontSize: '0.76rem' }}>Welcome</div>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 600 }}>AB</div>
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ width: '14px', height: '14px', color: '#fff', transform: menuOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.15s' }}
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
-              <div style={{ color: '#fff', lineHeight: '1.2' }}>
-                <div style={{ fontSize: '0.76rem' }}>Welcome</div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 600 }}>AB</div>
-              </div>
-              <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '14px', height: '14px', color: '#fff' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
+
+              {/* Dropdown menu */}
+              {menuOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    right: 0,
+                    backgroundColor: '#fff',
+                    minWidth: '220px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    borderRadius: '0 0 4px 4px',
+                    zIndex: 1000,
+                    marginTop: '4px',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {['Account', 'My Profile', 'Message Center', 'Locations', 'Language Preference'].map((item, i, arr) => (
+                    <a
+                      key={item}
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); setMenuOpen(false); }}
+                      style={{
+                        display: 'block',
+                        padding: '14px 20px',
+                        color: '#141414',
+                        fontSize: '0.94rem',
+                        fontFamily: f,
+                        textDecoration: 'none',
+                        borderBottom: i < arr.length - 1 ? '1px solid #e2dede' : 'none',
+                      }}
+                      className="hover:bg-gray-50"
+                    >
+                      {item}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
