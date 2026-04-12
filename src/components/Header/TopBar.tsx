@@ -28,6 +28,11 @@ export default function TopBar() {
           <ul className="flex items-center list-none m-0 p-0">
             <li style={{ margin: '0 24px 0 0', height: '40px', display: 'flex', alignItems: 'center' }}>
               <a href="#" style={linkStyle} className="hover:underline">
+                Open an Account
+              </a>
+            </li>
+            <li style={{ margin: '0 24px 0 0', height: '40px', display: 'flex', alignItems: 'center' }}>
+              <a href="#" style={linkStyle} className="hover:underline">
                 ATMs/Locations
               </a>
             </li>
