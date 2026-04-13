@@ -3,20 +3,21 @@ const f = '"Wells Fargo Sans", Arial, Helvetica, sans-serif';
 export default function FargoSection() {
   return (
     <div style={{ background: 'linear-gradient(135deg, #4a3728 0%, #3b3331 40%, #2a2a2a 100%)' }}>
-      <div className="max-w-[1400px] mx-auto" style={{ padding: '48px 20px' }}>
-        <div className="flex items-center">
+      <div className="max-w-[1400px] mx-auto wf-section-px" style={{ paddingTop: '48px', paddingBottom: '48px' }}>
+        <div className="wf-stack-row">
           {/* Left: Phone image */}
-          <div className="flex-1 flex justify-center">
+          <div style={{ flex: '1 1 auto', display: 'flex', justifyContent: 'center' }}>
             <img
               src="https://www17.wellsfargomedia.com/assets/images/rwd/Fargo-Spending-Insights-Wells-Fargo-Mobile-App-2025.png"
               alt=""
-              style={{ maxHeight: '420px', objectFit: 'contain' }}
+              loading="lazy"
+              style={{ maxHeight: '420px', maxWidth: '100%', objectFit: 'contain' }}
             />
           </div>
 
           {/* Right: Text + CTA */}
-          <div className="flex-1">
-            <div style={{ maxWidth: '480px' }}>
+          <div style={{ flex: '1 1 auto' }}>
+            <div style={{ maxWidth: '480px', margin: '0 auto' }}>
               <h2 style={{
                 fontFamily: f, fontSize: '1.64705882rem', lineHeight: '1.25',
                 color: '#fff', fontWeight: 400, margin: '0 0 16px',

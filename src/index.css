@@ -55,13 +55,14 @@
   font-size: 17px;
   font-weight: 400;
   line-height: 1.294;
-  color: #787070;
+  color: #555;
 }
 
 body {
   background-color: #fff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 a {
@@ -69,17 +70,18 @@ a {
   text-decoration: underline;
 }
 
-a:hover {
-  text-decoration: underline;
-}
+a:hover { text-decoration: underline; }
 
-/* Neutral clickable anchors (no href) still show pointer cursor */
 a:not([href]) {
   cursor: pointer;
   color: inherit;
 }
-a:not([href]):hover {
-  text-decoration: underline;
+a:not([href]):hover { text-decoration: underline; }
+
+/* Focus-visible for accessibility */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid #5a469b;
+  outline-offset: 2px;
 }
 
 h1, h2, h3, h4 {
@@ -100,3 +102,264 @@ img {
 
 ul { list-style-type: square; margin: 0; padding: 0; }
 nav ul, nav ol { list-style: none; }
+
+button {
+  font-family: inherit;
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES (Mobile-first)
+   ============================================ */
+
+/* Hero section — stacks on mobile */
+.wf-hero-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 32px;
+  padding-left: 0;
+}
+.wf-hero-signon {
+  width: 100%;
+  max-width: 100%;
+  flex: 1 1 100%;
+}
+.wf-hero-text {
+  flex: 1 1 100%;
+  max-width: 100%;
+  padding-top: 0;
+  text-align: center;
+}
+.wf-hero-promo {
+  flex: 1 1 100%;
+  width: 100%;
+  text-align: center;
+  padding-top: 16px;
+}
+.wf-hero-h {
+  font-size: 2rem !important;
+  line-height: 1.15 !important;
+}
+.wf-hero-p {
+  font-size: 1rem !important;
+}
+.wf-hero-enjoy {
+  font-size: 1.2rem !important;
+}
+.wf-hero-amount {
+  font-size: 4rem !important;
+}
+
+@media (min-width: 900px) {
+  .wf-hero-row {
+    flex-wrap: nowrap;
+    gap: 48px;
+    padding-left: 40px;
+  }
+  .wf-hero-signon {
+    width: 335px;
+    min-width: 335px;
+    max-width: 335px;
+    flex: 0 0 335px;
+  }
+  .wf-hero-text {
+    flex: 1 1 auto;
+    max-width: 520px;
+    padding-top: 32px;
+    text-align: left;
+  }
+  .wf-hero-promo {
+    width: 220px;
+    min-width: 220px;
+    flex: 0 0 220px;
+    padding-top: 32px;
+  }
+  .wf-hero-h {
+    font-size: 3.29411765rem !important;
+    line-height: 1.107 !important;
+  }
+  .wf-hero-p {
+    font-size: 1.29411765rem !important;
+  }
+  .wf-hero-enjoy {
+    font-size: 1.5rem !important;
+  }
+  .wf-hero-amount {
+    font-size: 6rem !important;
+  }
+}
+
+/* TopBar header — simple flex, not absolute */
+.wf-topbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+.wf-topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.wf-hide-mobile {
+  display: none !important;
+}
+@media (min-width: 768px) {
+  .wf-hide-mobile {
+    display: flex !important;
+  }
+  a.wf-hide-mobile, span.wf-hide-mobile {
+    display: inline-flex !important;
+  }
+}
+
+/* Primary nav — horizontal scroll on mobile */
+.wf-mainnav-row {
+  display: flex;
+  align-items: flex-end;
+  height: 60px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.wf-mainnav-row::-webkit-scrollbar { display: none; }
+
+/* Grids (mobile → tablet → desktop) */
+.wf-grid-4 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .wf-grid-4 { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 1024px) {
+  .wf-grid-4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+.wf-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .wf-grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+.wf-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 900px) {
+  .wf-grid-2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Stack row — stacks on mobile, side-by-side on desktop */
+.wf-stack-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+}
+@media (min-width: 900px) {
+  .wf-stack-row {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+  }
+}
+
+/* Footer help items — stack on mobile */
+.wf-footer-help {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (min-width: 768px) {
+  .wf-footer-help {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+/* Register form rows — 2-col on desktop, 1-col on mobile */
+.wf-form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+@media (min-width: 640px) {
+  .wf-form-row { grid-template-columns: 1fr 1fr; }
+}
+
+.wf-form-card {
+  padding: 24px 16px;
+}
+@media (min-width: 640px) {
+  .wf-form-card { padding: 40px 48px; }
+}
+
+/* Dashboard header — hide welcome text on narrow */
+.wf-welcome-text {
+  display: none;
+}
+@media (min-width: 640px) {
+  .wf-welcome-text { display: block; }
+}
+
+/* Utility: hide on mobile */
+.wf-mobile-only { display: block; }
+.wf-desktop-only { display: none; }
+@media (min-width: 768px) {
+  .wf-mobile-only { display: none; }
+  .wf-desktop-only { display: block; }
+}
+
+/* Container padding */
+.wf-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+@media (min-width: 640px) {
+  .wf-container { padding: 0 20px; }
+}
+@media (min-width: 900px) {
+  .wf-container { padding: 0 32px; }
+}
+
+/* Section horizontal padding for content areas */
+.wf-section-px {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+@media (min-width: 640px) {
+  .wf-section-px {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* Hover lift for cards */
+.wf-card-hover {
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.wf-card-hover:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Loading fallback */
+.wf-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  font-family: "Wells Fargo Sans", Arial, Helvetica, sans-serif;
+  color: #787070;
+}

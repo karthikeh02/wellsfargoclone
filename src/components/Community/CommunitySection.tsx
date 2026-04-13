@@ -41,11 +41,11 @@ export default function CommunitySection() {
         </div>
 
         {/* Two cards */}
-        <div className="flex flex-nowrap gap-4" style={{ padding: '0 20px 40px' }}>
+        <div className="wf-grid-2 wf-section-px" style={{ paddingBottom: '40px' }}>
           {cards.map((card) => (
             <div
               key={card.title}
-              className="flex-1 flex flex-col"
+              className="flex flex-col wf-card-hover"
               style={{ borderRadius: '10px', boxShadow: '0 1px 5px 0 rgba(0,0,0,0.3)', overflow: 'hidden' }}
             >
               <img

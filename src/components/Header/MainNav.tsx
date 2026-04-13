@@ -25,9 +25,9 @@ export default function MainNav() {
 
   return (
     <div className="w-full" style={{ backgroundColor: '#f9f7f6' }}>
-      <nav className="max-w-[1400px] mx-auto" style={{ padding: '0 20px' }} aria-label="Main Navigation">
+      <nav className="max-w-[1400px] mx-auto wf-section-px" aria-label="Main Navigation">
         {/* L1 - Primary nav tabs */}
-        <div className="flex items-end" style={{ height: '60px' }}>
+        <div className="wf-mainnav-row">
           <ul className="flex items-end list-none m-0 p-0 h-full">
             {navItems.map((item, i) => (
               <li key={item.label} className="inline-block h-full">

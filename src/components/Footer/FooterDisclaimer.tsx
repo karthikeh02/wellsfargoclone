@@ -12,7 +12,7 @@ const socialIcons = [
 export default function FooterDisclaimer() {
   return (
     <div style={{ backgroundColor: '#fff' }}>
-      <div className="max-w-[1400px] mx-auto" style={{ padding: '16px 20px 32px' }}>
+      <div className="max-w-[1400px] mx-auto wf-section-px" style={{ paddingTop: '16px', paddingBottom: '32px' }}>
         {/* Social media icons - LEFT aligned */}
         <div className="flex items-center gap-4 mb-6">
           {socialIcons.map((s) => (
@@ -23,7 +23,7 @@ export default function FooterDisclaimer() {
         </div>
 
         {/* Investment Disclaimer - bulleted list style like original */}
-        <div style={{ border: '1px solid #e2dede', borderRadius: '4px', padding: '20px 24px', marginBottom: '24px', maxWidth: '600px' }}>
+        <div style={{ border: '1px solid #e2dede', borderRadius: '4px', padding: '20px 24px', marginBottom: '24px', maxWidth: '600px', width: '100%' }}>
           <p style={{ fontFamily: f, fontSize: '0.88235294rem', fontWeight: 700, color: '#141414', margin: '0 0 12px' }}>
             Investment and Insurance Products are:
           </p>

@@ -3,14 +3,14 @@ const f = '"Wells Fargo Sans", Arial, Helvetica, sans-serif';
 export default function FooterHelp() {
   return (
     <div style={{ borderTop: '1px solid #e2dede' }}>
-      <div className="max-w-[1400px] mx-auto" style={{ padding: '24px 20px 32px' }}>
+      <div className="max-w-[1400px] mx-auto wf-section-px" style={{ paddingTop: '24px', paddingBottom: '32px' }}>
         <h2 style={{
           color: '#141414', fontFamily: f, fontSize: '1.41176471rem',
           fontWeight: 600, lineHeight: '1.25', margin: '0 0 20px',
         }}>
           How can we help?
         </h2>
-        <div className="flex items-start" style={{ justifyContent: 'space-between' }}>
+        <div className="wf-footer-help">
           {/* Find a location */}
           <div className="flex items-center gap-3">
             <div style={{

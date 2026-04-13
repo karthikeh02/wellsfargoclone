@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import TopBar from './components/Header/TopBar';
 import MainNav from './components/Header/MainNav';
 import HeroBanner from './components/Hero/HeroBanner';
@@ -10,8 +11,10 @@ import CommunitySection from './components/Community/CommunitySection';
 import FooterHelp from './components/Footer/FooterHelp';
 import FooterLinks from './components/Footer/FooterLinks';
 import FooterDisclaimer from './components/Footer/FooterDisclaimer';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
+import ErrorBoundary from './components/ErrorBoundary';
+
+const Register = lazy(() => import('./pages/Register'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
 
 function HomePage() {
   return (
@@ -31,13 +34,22 @@ function HomePage() {
   );
 }
 
+function LoadingFallback() {
+  return <div className="wf-loading">Loading...</div>;
+}
+
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/accounts" element={<Dashboard />} />
-    </Routes>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/accounts" element={<Dashboard />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   );
 }
 

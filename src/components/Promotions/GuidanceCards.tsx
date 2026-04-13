@@ -37,15 +37,15 @@ export default function GuidanceCards() {
         </div>
 
         {/* Three cards */}
-        <div className="flex flex-nowrap gap-5" style={{ padding: '0 20px 40px' }}>
+        <div className="wf-grid-3 wf-section-px" style={{ paddingBottom: '40px' }}>
           {cards.map((card) => (
             <div
               key={card.title}
-              className="flex-1 flex flex-col"
+              className="flex flex-col wf-card-hover"
               style={{ borderRadius: '12px', boxShadow: '0 1px 5px 0 rgba(0,0,0,0.15)', overflow: 'hidden', backgroundColor: '#fff' }}
             >
               <img
-                src={card.img} alt=""
+                src={card.img} alt="" loading="lazy"
                 style={{ width: '100%', aspectRatio: '616/353', display: 'block', objectFit: 'cover' }}
               />
               <div className="flex flex-col flex-1" style={{ padding: '20px 24px' }}>

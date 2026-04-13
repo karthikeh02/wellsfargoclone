@@ -27,7 +27,7 @@ export default function SignOnBox() {
   };
 
   return (
-    <div style={{ width: '335px', flexShrink: 0 }}>
+    <div style={{ width: '100%', maxWidth: '335px', margin: '0 auto' }}>
       {/* Top section - white */}
       <div
         style={{

@@ -15,9 +15,9 @@ export default function PromoBanner() {
         {/* Content overlay - LEFT aligned */}
         <div
           className="absolute inset-0 flex items-center"
-          style={{ padding: '0 80px' }}
+          style={{ padding: '16px' }}
         >
-          <div style={{ maxWidth: '480px' }}>
+          <div className="wf-promo-content" style={{ maxWidth: '480px', padding: '0 16px' }}>
             <h2 style={{
               fontFamily: f, fontSize: '2.47058824rem', lineHeight: '1.17',
               color: '#141414', fontWeight: 300, margin: '0 0 16px',

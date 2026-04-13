@@ -16,7 +16,7 @@ const links = [
 export default function FooterLinks() {
   return (
     <div style={{ borderTop: '1px solid #e2dede' }}>
-      <div className="max-w-[1400px] mx-auto" style={{ padding: '16px 20px' }}>
+      <div className="max-w-[1400px] mx-auto wf-section-px" style={{ paddingTop: '16px', paddingBottom: '16px' }}>
         <div className="flex flex-wrap items-center gap-y-1">
           {links.map((link, i) => (
             <span key={link} className="flex items-center">
