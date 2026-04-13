@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FooterHelp from '../components/Footer/FooterHelp';
 import FooterLinks from '../components/Footer/FooterLinks';
@@ -8,7 +8,7 @@ import { supabase, type User, type Transaction } from '../lib/supabase';
 
 const f = '"Wells Fargo Sans", Arial, Helvetica, sans-serif';
 
-const toolIcons: Record<string, JSX.Element> = {
+const toolIcons: Record<string, ReactElement> = {
   spending: (
     <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '32px', height: '32px', color: '#D71E28' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
