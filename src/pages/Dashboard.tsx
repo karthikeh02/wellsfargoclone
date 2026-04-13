@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import FooterHelp from '../components/Footer/FooterHelp';
 import FooterLinks from '../components/Footer/FooterLinks';
 import FooterDisclaimer from '../components/Footer/FooterDisclaimer';
+import { getCurrentUser, logout, initials, formatCurrency } from '../lib/session';
+import type { User } from '../lib/supabase';
 
 const f = '"Wells Fargo Sans", Arial, Helvetica, sans-serif';
 
@@ -34,6 +36,31 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Load user on mount; poll every 15s so admin balance changes appear quickly
+  useEffect(() => {
+    let active = true;
+    async function load() {
+      const u = await getCurrentUser();
+      if (!active) return;
+      if (!u) {
+        navigate('/');
+        return;
+      }
+      setUser(u);
+      setLoading(false);
+    }
+    load();
+    const interval = setInterval(load, 15000);
+    return () => { active = false; clearInterval(interval); };
+  }, [navigate]);
+
+  const handleSignOff = () => {
+    logout();
+    navigate('/');
+  };
 
   // Close dropdown on Escape or click outside
   useEffect(() => {
@@ -51,6 +78,14 @@ export default function Dashboard() {
     };
   }, [menuOpen]);
 
+  if (loading || !user) {
+    return <div className="wf-loading">Loading your accounts…</div>;
+  }
+
+  const userInitials = initials(user.full_name, user.username);
+  const checkingStr = formatCurrency(Number(user.checking_balance));
+  const investmentStr = formatCurrency(Number(user.investment_balance));
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: f }}>
       {/* Header */}
@@ -66,7 +101,7 @@ export default function Dashboard() {
               </svg>
             </button>
             <div className="wf-hide-mobile" style={{ width: '1px', height: '28px', backgroundColor: 'rgba(255,255,255,0.4)' }} />
-            <a href="/" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="wf-hide-mobile hover:underline" style={{ color: '#fff', textDecoration: 'none', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <a href="/" onClick={(e) => { e.preventDefault(); handleSignOff(); }} className="wf-hide-mobile hover:underline" style={{ color: '#fff', textDecoration: 'none', fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '16px', height: '16px' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
@@ -95,7 +130,7 @@ export default function Dashboard() {
                 </div>
                 <div className="wf-welcome-text" style={{ color: '#fff', lineHeight: '1.2', textAlign: 'left' }}>
                   <div style={{ fontSize: '0.76rem' }}>Welcome</div>
-                  <div style={{ fontSize: '0.88rem', fontWeight: 600 }}>AB</div>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 600 }}>{userInitials}</div>
                 </div>
                 <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '14px', height: '14px', color: '#fff', transform: menuOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.15s' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -144,8 +179,8 @@ export default function Dashboard() {
             </span>
           </div>
 
-          <AccountCard title="EVERYDAY CHECKING" balance="$0" />
-          <AccountCard title="INVESTMENT" balance="$0" />
+          <AccountCard title="EVERYDAY CHECKING" balance={checkingStr} />
+          <AccountCard title="INVESTMENT" balance={investmentStr} />
 
           {/* Quick Actions */}
           <div style={{ marginBottom: '32px', marginTop: '8px' }}>
