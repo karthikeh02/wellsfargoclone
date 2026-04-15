@@ -3,20 +3,24 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { supabase, type User, type Transaction, type AccountType } from '../lib/supabase';
 import { formatCurrency } from '../lib/session';
 import { AdminHeader, ErrorBanner, SuccessBanner } from './Admin';
+import { getAdminRole } from '../lib/adminAuth';
 
 const f = '"Wells Fargo Sans", Arial, Helvetica, sans-serif';
-const ADMIN_AUTH_KEY = 'wf_admin_auth';
 
 export default function AdminClient() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [authed] = useState(() => sessionStorage.getItem(ADMIN_AUTH_KEY) === '1');
+  const role = getAdminRole();
+  const authed = role !== null;
+  const isSuperAdmin = role === 'superadmin';
   const [user, setUser] = useState<User | null>(null);
   const [txns, setTxns] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  const backPath = isSuperAdmin ? '/superadmin' : '/admin';
 
   useEffect(() => {
     if (!authed) {
@@ -56,7 +60,7 @@ export default function AdminClient() {
         onHome={() => navigate('/')}
         title="Client Dashboard"
         rightAction={
-          <button type="button" onClick={() => navigate('/admin')} style={backBtn}>
+          <button type="button" onClick={() => navigate(backPath)} style={backBtn}>
             ← Back to lookup
           </button>
         }
@@ -73,7 +77,7 @@ export default function AdminClient() {
               {error && <ErrorBanner>{error}</ErrorBanner>}
               {toast && <SuccessBanner>{toast}</SuccessBanner>}
 
-              <ClientHeader user={user} onRefresh={loadAll} onToast={setToast} onError={setError} onDeleted={() => navigate('/admin')} />
+              <ClientHeader user={user} canDelete={isSuperAdmin} onRefresh={loadAll} onToast={setToast} onError={setError} onDeleted={() => navigate(backPath)} />
 
               <BalanceEditor user={user} onSaved={() => { loadAll(); setToast('Balances updated'); }} onError={setError} />
 
@@ -106,8 +110,8 @@ export default function AdminClient() {
 
 /* ---------- Client header with name + delete ---------- */
 
-function ClientHeader({ user, onRefresh, onToast, onError, onDeleted }: {
-  user: User; onRefresh: () => void; onToast: (m: string) => void; onError: (m: string) => void; onDeleted: () => void;
+function ClientHeader({ user, canDelete, onRefresh, onToast, onError, onDeleted }: {
+  user: User; canDelete: boolean; onRefresh: () => void; onToast: (m: string) => void; onError: (m: string) => void; onDeleted: () => void;
 }) {
   const handleDelete = async () => {
     if (!window.confirm(`Permanently delete ${user.username} (${user.email})?\nThis will also delete all their transactions.`)) return;
@@ -135,9 +139,11 @@ function ClientHeader({ user, onRefresh, onToast, onError, onDeleted }: {
       </div>
       <div style={{ display: 'flex', gap: '8px' }}>
         <button type="button" onClick={onRefresh} style={{ ...subtleBtn }}>Refresh</button>
-        <button type="button" onClick={handleDelete} style={{ ...subtleBtn, color: '#fff', backgroundColor: '#b01c24', border: 'none' }}>
-          Delete user
-        </button>
+        {canDelete && (
+          <button type="button" onClick={handleDelete} style={{ ...subtleBtn, color: '#fff', backgroundColor: '#b01c24', border: 'none' }}>
+            Delete user
+          </button>
+        )}
       </div>
     </div>
   );

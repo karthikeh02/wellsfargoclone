@@ -17,6 +17,7 @@ import InstallPrompt from './components/InstallPrompt';
 const Register = lazy(() => import('./pages/Register'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Admin = lazy(() => import('./pages/Admin'));
+const SuperAdmin = lazy(() => import('./pages/SuperAdmin'));
 const AdminClient = lazy(() => import('./pages/AdminClient'));
 
 function HomePage() {
@@ -51,6 +52,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/accounts" element={<Dashboard />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/superadmin" element={<SuperAdmin />} />
           <Route path="/admin/client/:id" element={<AdminClient />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

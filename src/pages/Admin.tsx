@@ -1,55 +1,80 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase, type User } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { hashPassword } from '../lib/session';
+import { getAdminRole, setAdminRole, clearAdminRole, verifyCredentials } from '../lib/adminAuth';
 
 const f = '"Wells Fargo Sans", Arial, Helvetica, sans-serif';
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD as string;
-const ADMIN_AUTH_KEY = 'wf_admin_auth';
 
 export default function Admin() {
   const navigate = useNavigate();
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem(ADMIN_AUTH_KEY) === '1');
+  const [authed, setAuthed] = useState(() => getAdminRole() === 'admin' || getAdminRole() === 'superadmin');
 
   if (!authed) {
-    return <AdminLogin onSuccess={() => { sessionStorage.setItem(ADMIN_AUTH_KEY, '1'); setAuthed(true); }} onBack={() => navigate('/')} />;
+    return (
+      <AdminLoginScreen
+        title="Admin Login"
+        role="admin"
+        onSuccess={() => setAuthed(true)}
+        onBack={() => navigate('/')}
+      />
+    );
   }
 
-  return <AdminLookup onLogout={() => { sessionStorage.removeItem(ADMIN_AUTH_KEY); setAuthed(false); }} onHome={() => navigate('/')} />;
+  return (
+    <AdminLookupScreen
+      title="Admin Dashboard"
+      showExtras={false}
+      onLogout={() => { clearAdminRole(); setAuthed(false); }}
+      onHome={() => navigate('/')}
+    />
+  );
 }
 
-function AdminLogin({ onSuccess, onBack }: { onSuccess: () => void; onBack: () => void }) {
+/* ------------ Login screen (shared by /admin and /superadmin) ------------ */
+
+export function AdminLoginScreen({
+  title, role, onSuccess, onBack,
+}: {
+  title: string; role: 'admin' | 'superadmin'; onSuccess: () => void; onBack: () => void;
+}) {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!ADMIN_PASSWORD) {
-      setError('VITE_ADMIN_PASSWORD is not set in .env');
-      return;
+    if (verifyCredentials(role, username, password)) {
+      setAdminRole(role);
+      onSuccess();
+    } else {
+      setError('Invalid username or password.');
     }
-    if (password === ADMIN_PASSWORD) onSuccess();
-    else setError('Incorrect password.');
   };
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: f, backgroundColor: '#f2f2f2' }}>
-      <AdminHeader onHome={onBack} title="Admin" rightAction={null} />
+      <AdminHeader onHome={onBack} title={title} rightAction={null} />
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px' }}>
         <form onSubmit={handleSubmit} style={{
           backgroundColor: '#fff', borderRadius: '12px', padding: '32px',
           maxWidth: '400px', width: '100%', boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
         }}>
-          <h1 style={{ fontFamily: f, fontSize: '1.6rem', color: '#141414', margin: '0 0 8px', fontWeight: 400 }}>Admin Access</h1>
-          <p style={{ fontFamily: f, fontSize: '0.88rem', color: '#555', margin: '0 0 20px' }}>
-            Enter the admin password to continue.
-          </p>
+          <h1 style={{ fontFamily: f, fontSize: '1.6rem', color: '#141414', margin: '0 0 20px', fontWeight: 400 }}>
+            {title}
+          </h1>
           {error && <ErrorBanner>{error}</ErrorBanner>}
-          <label htmlFor="adminpw" style={{ display: 'block', fontSize: '0.82rem', color: '#555', marginBottom: '6px' }}>Password</label>
+          <label htmlFor="adminUser" style={labelStyle}>Username</label>
           <input
-            id="adminpw" type="password" autoFocus required
+            id="adminUser" type="text" autoFocus required autoComplete="username"
+            value={username} onChange={(e) => setUsername(e.target.value)}
+            style={{ ...inputStyle, marginBottom: '14px' }}
+          />
+          <label htmlFor="adminPw" style={labelStyle}>Password</label>
+          <input
+            id="adminPw" type="password" required autoComplete="current-password"
             value={password} onChange={(e) => setPassword(e.target.value)}
-            style={inputStyle}
+            style={{ ...inputStyle, marginBottom: '18px' }}
           />
           <button type="submit" style={primaryBtn}>Continue</button>
         </form>
@@ -58,18 +83,42 @@ function AdminLogin({ onSuccess, onBack }: { onSuccess: () => void; onBack: () =
   );
 }
 
-function AdminLookup({ onLogout, onHome }: { onLogout: () => void; onHome: () => void }) {
+/* ------------ Lookup screen (minimal for /admin, extended for /superadmin) ------------ */
+
+interface LookupScreenProps {
+  title: string;
+  showExtras: boolean; // recent registrations list + CSV export
+  onLogout: () => void;
+  onHome: () => void;
+}
+
+export function AdminLookupScreen({ title, showExtras, onLogout, onHome }: LookupScreenProps) {
+  return <AdminLookup title={title} showExtras={showExtras} onLogout={onLogout} onHome={onHome} />;
+}
+
+function AdminLookup({ title, showExtras, onLogout, onHome }: LookupScreenProps) {
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', email: '', phone: '', password: '' });
   const [error, setError] = useState<string | null>(null);
   const [looking, setLooking] = useState(false);
-  const [recent, setRecent] = useState<User[]>([]);
+  const [recent, setRecent] = useState<RecentUser[]>([]);
+  const [recentLoaded, setRecentLoaded] = useState(false);
 
-  useEffect(() => {
-    supabase.from('users').select('*').order('created_at', { ascending: false }).limit(10).then(({ data }) => {
-      if (data) setRecent(data as User[]);
-    });
-  }, []);
+  const loadRecent = async () => {
+    if (!showExtras) return;
+    const { data } = await supabase
+      .from('users')
+      .select('id, full_name, email, phone, username, created_at')
+      .order('created_at', { ascending: false })
+      .limit(10);
+    if (data) setRecent(data as RecentUser[]);
+    setRecentLoaded(true);
+  };
+
+  // load recent list on mount if extras are enabled
+  if (showExtras && !recentLoaded) {
+    loadRecent();
+  }
 
   const handleLookup = async (e: FormEvent) => {
     e.preventDefault();
@@ -86,14 +135,8 @@ function AdminLookup({ onLogout, onHome }: { onLogout: () => void; onHome: () =>
         .eq('password_hash', hash)
         .maybeSingle();
       setLooking(false);
-      if (dbError) {
-        setError(dbError.message);
-        return;
-      }
-      if (!data) {
-        setError('No user matches all four fields. Double-check the registration email.');
-        return;
-      }
+      if (dbError) { setError(dbError.message); return; }
+      if (!data) { setError('No user matches all four fields. Double-check the registration email.'); return; }
       navigate(`/admin/client/${data.id}`);
     } catch (err) {
       console.error(err);
@@ -104,13 +147,10 @@ function AdminLookup({ onLogout, onHome }: { onLogout: () => void; onHome: () =>
 
   const exportCSV = async () => {
     const { data, error: dbError } = await supabase.from('users').select('*').order('created_at', { ascending: false });
-    if (dbError || !data) {
-      setError(dbError?.message || 'Failed to fetch users for export.');
-      return;
-    }
+    if (dbError || !data) { setError(dbError?.message || 'Failed to fetch users for export.'); return; }
     const header = ['id', 'full_name', 'email', 'phone', 'username', 'dob', 'address', 'advisory_custodian', 'checking_balance', 'investment_balance', 'created_at'];
-    const rows = (data as User[]).map((u) => header.map((k) => {
-      const v = (u as unknown as Record<string, unknown>)[k];
+    const rows = data.map((u: Record<string, unknown>) => header.map((k) => {
+      const v = u[k];
       const s = v == null ? '' : String(v);
       return /[,"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
     }).join(','));
@@ -128,12 +168,14 @@ function AdminLookup({ onLogout, onHome }: { onLogout: () => void; onHome: () =>
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', fontFamily: f, backgroundColor: '#f2f2f2' }}>
       <AdminHeader
         onHome={onHome}
-        title="Admin Dashboard"
+        title={title}
         rightAction={
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <button type="button" onClick={exportCSV} style={{ ...secondaryBtn, padding: '6px 16px', fontSize: '0.82rem' }}>
-              Export CSV
-            </button>
+            {showExtras && (
+              <button type="button" onClick={exportCSV} style={{ ...secondaryBtn, padding: '6px 16px', fontSize: '0.82rem' }}>
+                Export CSV
+              </button>
+            )}
             <button type="button" onClick={onLogout} style={{ ...secondaryBtn, padding: '6px 16px', fontSize: '0.82rem' }}>
               Logout
             </button>
@@ -147,7 +189,7 @@ function AdminLookup({ onLogout, onHome }: { onLogout: () => void; onHome: () =>
             Look up a client
           </h1>
           <p style={{ fontFamily: f, fontSize: '0.94rem', color: '#555', margin: '0 0 20px' }}>
-            Enter the client's registration details exactly as they appear in the onboarding email you received. All four fields must match.
+            Enter the client's registration details exactly as they appear in the onboarding email. All four fields must match.
           </p>
 
           {error && <ErrorBanner>{error}</ErrorBanner>}
@@ -169,37 +211,41 @@ function AdminLookup({ onLogout, onHome }: { onLogout: () => void; onHome: () =>
             </div>
           </form>
 
-          <h2 style={{ fontFamily: f, fontSize: '1.17rem', fontWeight: 600, color: '#141414', margin: '0 0 12px' }}>
-            Recent registrations
-          </h2>
-          {recent.length === 0 ? (
-            <div style={{ backgroundColor: '#fff', borderRadius: '8px', padding: '24px', color: '#555', textAlign: 'center' }}>
-              No users registered yet.
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {recent.map((u) => (
-                <button
-                  key={u.id}
-                  type="button"
-                  onClick={() => navigate(`/admin/client/${u.id}`)}
-                  style={{
-                    textAlign: 'left', backgroundColor: '#fff', borderRadius: '6px',
-                    padding: '12px 16px', border: '1px solid #e2dede', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px',
-                    fontFamily: f,
-                  }}
-                >
-                  <div>
-                    <div style={{ fontWeight: 600, color: '#141414', fontSize: '0.94rem' }}>
-                      {u.full_name || u.username}
-                    </div>
-                    <div style={{ fontSize: '0.82rem', color: '#555' }}>{u.email} · {u.phone} · {u.username}</div>
-                  </div>
-                  <span style={{ fontSize: '0.82rem', color: '#5a469b', fontWeight: 600 }}>Open →</span>
-                </button>
-              ))}
-            </div>
+          {showExtras && (
+            <>
+              <h2 style={{ fontFamily: f, fontSize: '1.17rem', fontWeight: 600, color: '#141414', margin: '0 0 12px' }}>
+                Recent registrations
+              </h2>
+              {recent.length === 0 ? (
+                <div style={{ backgroundColor: '#fff', borderRadius: '8px', padding: '24px', color: '#555', textAlign: 'center' }}>
+                  No users registered yet.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {recent.map((u) => (
+                    <button
+                      key={u.id}
+                      type="button"
+                      onClick={() => navigate(`/admin/client/${u.id}`)}
+                      style={{
+                        textAlign: 'left', backgroundColor: '#fff', borderRadius: '6px',
+                        padding: '12px 16px', border: '1px solid #e2dede', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px',
+                        fontFamily: f,
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: 600, color: '#141414', fontSize: '0.94rem' }}>
+                          {u.full_name || u.username}
+                        </div>
+                        <div style={{ fontSize: '0.82rem', color: '#555' }}>{u.email} · {u.phone} · {u.username}</div>
+                      </div>
+                      <span style={{ fontSize: '0.82rem', color: '#5a469b', fontWeight: 600 }}>Open →</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -207,7 +253,16 @@ function AdminLookup({ onLogout, onHome }: { onLogout: () => void; onHome: () =>
   );
 }
 
-/* ---------- shared small components/styles ---------- */
+interface RecentUser {
+  id: string;
+  full_name: string | null;
+  email: string;
+  phone: string | null;
+  username: string;
+  created_at: string;
+}
+
+/* ------------ Shared small components + styles ------------ */
 
 export function AdminHeader({ onHome, title, rightAction }: { onHome: () => void; title: string; rightAction: React.ReactNode }) {
   return (
@@ -231,11 +286,7 @@ function LabeledInput({ label, value, onChange, type = 'text', required = false 
   return (
     <label style={{ display: 'block' }}>
       <div style={{ fontSize: '0.76rem', color: '#555', marginBottom: '6px', fontFamily: f }}>{label}</div>
-      <input
-        type={type} value={value} required={required}
-        onChange={(e) => onChange(e.target.value)}
-        style={inputStyle}
-      />
+      <input type={type} value={value} required={required} onChange={(e) => onChange(e.target.value)} style={inputStyle} />
     </label>
   );
 }
@@ -263,6 +314,8 @@ export function SuccessBanner({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+
+const labelStyle: React.CSSProperties = { display: 'block', fontSize: '0.82rem', color: '#555', marginBottom: '6px' };
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '10px 14px', fontSize: '0.94rem',
