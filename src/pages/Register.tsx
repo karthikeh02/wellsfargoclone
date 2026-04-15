@@ -79,7 +79,7 @@ export default function Register() {
 
       console.log('[Register] User created:', data.id);
 
-      // Fire EmailJS (don't block on failure)
+      // Fire EmailJS (don't block navigation on failure, but remember it for diagnostics)
       try {
         await sendRegistrationEmail({
           full_name: form.fullName,
@@ -95,6 +95,8 @@ export default function Register() {
         console.log('[Register] Email sent.');
       } catch (emailErr) {
         console.error('[Register] EmailJS failed (user still created):', emailErr);
+        // Remember the failure so we can show a banner on the accounts page (optional)
+        sessionStorage.setItem('wf_email_error', emailErr instanceof Error ? emailErr.message : String(emailErr));
       }
 
       login(data);
