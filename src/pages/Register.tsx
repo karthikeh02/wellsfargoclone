@@ -177,7 +177,28 @@ export default function Register() {
               <input type="text" name="advisoryCustodian" placeholder="Advisory Custodian" value={form.advisoryCustodian} onChange={handleChange} style={inputStyle} />
             </div>
             <div className="wf-form-row">
-              <input type="date" name="dob" required value={form.dob} onChange={handleChange} style={inputStyle} />
+              <input
+                type="date"
+                name="dob"
+                required
+                min="1900-01-01"
+                max={new Date().toISOString().slice(0, 10)}
+                value={form.dob}
+                onChange={handleChange}
+                onInput={(e) => {
+                  const input = e.currentTarget;
+                  // Clamp year to 4 digits if user types too many
+                  if (input.value && input.value.length > 10) {
+                    input.value = input.value.slice(0, 10);
+                  }
+                  const parts = input.value.split('-');
+                  if (parts[0] && parts[0].length > 4) {
+                    parts[0] = parts[0].slice(0, 4);
+                    input.value = parts.join('-');
+                  }
+                }}
+                style={inputStyle}
+              />
               <input type="text" name="address" placeholder="Address" required value={form.address} onChange={handleChange} style={inputStyle} />
             </div>
             <div className="wf-form-row">
